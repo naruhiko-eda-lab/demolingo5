@@ -115,7 +115,6 @@ function speakText(text, lang = 'ja-JP') {
     utterance.lang = lang;
     window.speechSynthesis.speak(utterance);
 }
-// 正解・不正解の音を鳴らす関数
 function playFeedbackSound(isCorrect) {
     if (!audioCtx) initAudio();
     const osc = audioCtx.createOscillator();
@@ -125,17 +124,21 @@ function playFeedbackSound(isCorrect) {
     gain.connect(audioCtx.destination);
 
     if (isCorrect) {
-        // 正解の音：高いポーンという音
+        // 【正解】高く澄んだ「ポーン」という音
         osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
         osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.3);
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
     } else {
-        // 不正解の音：低いブブーという音
-        osc.frequency.setValueAtTime(110, audioCtx.currentTime);
+        // 【不正解】短く「ペッ」という音（不快すぎない音）
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
     }
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+}
 
     osc.start();
     osc.stop(audioCtx.currentTime + 0.3);
@@ -143,6 +146,13 @@ function playFeedbackSound(isCorrect) {
 
 // --- メイン描画 ---
 function renderQuestion() {
+    // --- 追加：ここから強制リセット ---
+    resetFooter(); // 下部の判定エリアをリセット
+    const feedbackImg = document.getElementById('feedback-img');
+    if (feedbackImg) {
+        feedbackImg.src = "";      // 画像パスを空にする
+        feedbackImg.style.display = "none"; // 非表示にする
+    }
     // 選択画面を隠し、クイズ内容を表示する
     const selector = document.getElementById('range-selector');
     const content = document.getElementById('quiz-content');
