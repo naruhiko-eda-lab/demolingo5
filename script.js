@@ -322,38 +322,46 @@ function resetFooter() {
 }
 
 function init() {
+    // 1. 保存されたグループ名を取得
     const savedGroup = localStorage.getItem('selectedGroup');
-    
-    // 【修正ポイント】ボタンをプログラムから直接制御するようにします
-    const basicBtn = document.getElementById('basic-btn'); // HTMLにIDが必要
-    const othersBtn = document.getElementById('others-btn');
+    console.log("読み込まれたグループ:", savedGroup); // 確認用ログ
 
-    if (savedGroup) {
+    // 2. HTMLの要素が存在するか最終チェック
+    const selector = document.getElementById('range-selector');
+    const content = document.getElementById('quiz-content');
+
+    if (savedGroup && quizDataGroups[savedGroup]) {
+        // --- 保存されたグループがある場合：クイズ開始 ---
         currentGroupName = savedGroup;
         quizData = [...quizDataGroups[currentGroupName]];
         originalTotalQuestions = quizData.length;
+        
+        // 問題をランダムに入れ替え
         quizData.sort(() => Math.random() - 0.5); 
+        
+        // 画面を切り替えて問題を表示
+        if (selector) selector.style.display = 'none';
+        if (content) content.classList.remove('hidden');
+        
         renderQuestion();
     } else {
-        // 選択画面を表示
-        const selector = document.getElementById('range-selector');
-        const content = document.getElementById('quiz-content');
+        // --- 保存されたグループがない場合：選択画面を表示 ---
         if (selector) selector.style.display = 'block';
         if (content) content.classList.add('hidden');
-        elements.progressBar.style.width = '0%';
+        if (elements.progressBar) elements.progressBar.style.width = '0%';
     }
 
-    // イベントリスナーの登録
+    // イベントの登録（ここから下は今のままでOK）
     elements.actionBtn.addEventListener('click', handleAction);
+    
+    if (elements.audioBtn) {
+        elements.audioBtn.addEventListener('click', () => {
+            initAudio();
+            const text = (state === 'break') ? "きゅうけいじかん" : quizData[currentIndex].furigana;
+            speakText(text, 'ja-JP');
+        });
+    }
 
-    // スピーカーボタンの設定
-    elements.audioBtn.addEventListener('click', () => {
-        initAudio();
-        const text = (state === 'break') ? "きゅうけいじかん" : quizData[currentIndex].furigana;
-        speakText(text, 'ja-JP');
-    });
-
-    // 閉じるボタンの設定
     const closeBtn = document.querySelector('.close-btn');
     if (closeBtn) {
         closeBtn.onclick = () => {
