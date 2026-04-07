@@ -50,7 +50,7 @@ const quizDataGroups = {
     correctOrder: ["きょうは", "ようじが", "あります"], 
     options: ["あります", "ようじが", "きょうは", "じかんが"] 
 }
-}
+
     ],
     // グループ2：後半
     others: [
