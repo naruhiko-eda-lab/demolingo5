@@ -108,7 +108,7 @@ function initAudio() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
-function speakText(text, lang = 'ja-JP') {
+function speakText(text, lang = 'addEventListener('click') {
     if (!text) return;
     window.speechSynthesis.cancel(); 
     const utterance = new SpeechSynthesisUtterance(text);
@@ -439,16 +439,31 @@ function init() {
         if (content) content.classList.add('hidden');
     }
 
-    // イベント登録（エラー防止のため存在確認を入れる）
+// イベント登録（エラー防止のため存在確認を入れる）
     if (elements.actionBtn) {
         elements.actionBtn.addEventListener('click', handleAction);
     }
-    
+
     if (elements.audioBtn) {
         elements.audioBtn.addEventListener('click', () => {
             initAudio();
-            const text = (state === 'break') ? "きゅうけいじかん" : quizData[currentIndex].furigana;
-            speakText(text, 'ja-JP');
+            const quiz = quizData[currentIndex];
+            let text = "";
+            let lang = 'zh-CN'; // デフォルトは中国語
+
+            if (state === 'break') {
+                text = "きゅうけいじかん";
+                lang = 'ja-JP';
+            } else {
+                // 並び替えは漢字、その他はふりがな（ピンイン）
+                text = (quiz.type === 'reorder') ? quiz.kanji : quiz.furigana;
+                
+                // 【自動判定】ひらがな・カタカナがあれば日本語にする
+                if (/[ぁ-んァ-ヶ]/.test(text)) {
+                    lang = 'ja-JP';
+                }
+            }
+            speakText(text, lang);
         });
     }
 
@@ -457,11 +472,10 @@ function init() {
         closeBtn.onclick = () => {
             if (confirm('範囲選択画面に戻りますか？')) {
                 localStorage.removeItem('selectedGroup');
-                location.reload(); 
+                location.reload();
             }
         };
     }
-}
 
 // 確実に実行されるように呼び出し方を工夫
 if (document.readyState === 'loading') {
