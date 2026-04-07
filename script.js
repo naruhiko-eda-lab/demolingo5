@@ -322,37 +322,39 @@ function resetFooter() {
 }
 
 function init() {
+    console.log("init関数が開始されました"); // これが最初に出るはず
+
     // 1. 保存されたグループ名を取得
     const savedGroup = localStorage.getItem('selectedGroup');
-    console.log("読み込まれたグループ:", savedGroup); // 確認用ログ
+    console.log("読み込まれたグループ:", savedGroup);
 
-    // 2. HTMLの要素が存在するか最終チェック
+    // 2. HTML要素の取得（elementsが壊れていても動くように直接取得）
     const selector = document.getElementById('range-selector');
     const content = document.getElementById('quiz-content');
 
     if (savedGroup && quizDataGroups[savedGroup]) {
-        // --- 保存されたグループがある場合：クイズ開始 ---
+        console.log("クイズを開始します...");
         currentGroupName = savedGroup;
         quizData = [...quizDataGroups[currentGroupName]];
         originalTotalQuestions = quizData.length;
-        
-        // 問題をランダムに入れ替え
         quizData.sort(() => Math.random() - 0.5); 
-        
-        // 画面を切り替えて問題を表示
+
+        // 画面切り替え
         if (selector) selector.style.display = 'none';
         if (content) content.classList.remove('hidden');
-        
+
+        // 問題を表示
         renderQuestion();
     } else {
-        // --- 保存されたグループがない場合：選択画面を表示 ---
+        console.log("選択画面を表示します");
         if (selector) selector.style.display = 'block';
         if (content) content.classList.add('hidden');
-        if (elements.progressBar) elements.progressBar.style.width = '0%';
     }
 
-    // イベントの登録（ここから下は今のままでOK）
-    elements.actionBtn.addEventListener('click', handleAction);
+    // イベント登録（エラー防止のため存在確認を入れる）
+    if (elements.actionBtn) {
+        elements.actionBtn.addEventListener('click', handleAction);
+    }
     
     if (elements.audioBtn) {
         elements.audioBtn.addEventListener('click', () => {
@@ -365,10 +367,17 @@ function init() {
     const closeBtn = document.querySelector('.close-btn');
     if (closeBtn) {
         closeBtn.onclick = () => {
-            if (confirm('確定要返回範囲選択画面嗎？')) {
+            if (confirm('範囲選択画面に戻りますか？')) {
                 localStorage.removeItem('selectedGroup');
                 location.reload(); 
             }
         };
     }
+}
+
+// 確実に実行されるように呼び出し方を工夫
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init(); // すでに読み込み済みなら即座に実行
 }
