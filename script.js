@@ -271,11 +271,9 @@ function checkAnswer() {
 
     // 2. 判定ロジック（並び替えか通常問題かで分岐）
     if (quiz.type === "reorder") {
-        // 並び替え：正解配列をスペースでつないだ文字列と比較
         answerText = quiz.correctOrder.join(' ');
         isCorrect = (selectedOption === answerText);
     } else {
-        // 4択：正解プロパティと比較
         answerText = quiz.correctAnswer;
         isCorrect = (selectedOption === answerText);
     }
@@ -284,18 +282,18 @@ function checkAnswer() {
     if (isCorrect) {
         state = 'correct';
         score++;
-        // --- 音を鳴らす処理を追加 ---
-        if (typeof playFeedbackSound === 'function') {
-            playFeedbackSound(true); 
-        }
+        
+        // --- mp3音源（正解）を再生 ---
+        new Audio('sounds/correct.mp3').play().catch(e => console.log("Audio play error:", e));
+        
         showFeedback(true, answerText);
     } else {
         state = 'wrong';
         missedQuestions.push(quiz);
-        // --- 音を鳴らす処理を追加 ---
-        if (typeof playFeedbackSound === 'function') {
-            playFeedbackSound(false);
-        }
+        
+        // --- mp3音源（不正解：incorrect.mp3）を再生 ---
+        new Audio('sounds/incorrect.mp3').play().catch(e => console.log("Audio play error:", e));
+        
         showFeedback(false, answerText);
     }
 
