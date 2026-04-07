@@ -1,6 +1,5 @@
-// --- 1. グループ切り替え関数（一番上に置く） ---
 window.swapRange = function(group) {
-    console.log("グループを切り替えます:", group);
+    alert(group + " が選択されました！"); // これが出るか確認
     localStorage.setItem('selectedGroup', group);
     location.reload();
 };
