@@ -124,24 +124,23 @@ function playFeedbackSound(isCorrect) {
     gain.connect(audioCtx.destination);
 
     if (isCorrect) {
-        // 【正解】高く澄んだ「ポーン」という音
+        // --- 正解：澄んだポーン ---
+        // 以前のポーンは、高い880Hzから440Hzへ「指数関数的」に落としていました
         osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
-        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.3);
+        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.4);
+        
+        // 音量もスッと消えるように設定
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
     } else {
-        // 【不正解】短く「ペッ」という音（不快すぎない音）
-        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        // --- 不正解：鈍いボッ ---
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
     }
 
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.3);
-}
-
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.3);
+    osc.stop(audioCtx.currentTime + 0.4);
 }
 
 // --- メイン描画 ---
