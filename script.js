@@ -317,6 +317,11 @@ function resetFooter() {
 
 function init() {
     const savedGroup = localStorage.getItem('selectedGroup');
+    
+    // 【修正ポイント】ボタンをプログラムから直接制御するようにします
+    const basicBtn = document.getElementById('basic-btn'); // HTMLにIDが必要
+    const othersBtn = document.getElementById('others-btn');
+
     if (savedGroup) {
         currentGroupName = savedGroup;
         quizData = [...quizDataGroups[currentGroupName]];
@@ -324,13 +329,25 @@ function init() {
         quizData.sort(() => Math.random() - 0.5); 
         renderQuestion();
     } else {
+        // 選択画面を表示
         const selector = document.getElementById('range-selector');
         const content = document.getElementById('quiz-content');
         if (selector) selector.style.display = 'block';
         if (content) content.classList.add('hidden');
         elements.progressBar.style.width = '0%';
     }
+
+    // イベントリスナーの登録
     elements.actionBtn.addEventListener('click', handleAction);
+
+    // スピーカーボタンの設定
+    elements.audioBtn.addEventListener('click', () => {
+        initAudio();
+        const text = (state === 'break') ? "きゅうけいじかん" : quizData[currentIndex].furigana;
+        speakText(text, 'ja-JP');
+    });
+
+    // 閉じるボタンの設定
     const closeBtn = document.querySelector('.close-btn');
     if (closeBtn) {
         closeBtn.onclick = () => {
@@ -340,10 +357,4 @@ function init() {
             }
         };
     }
-    elements.audioBtn.addEventListener('click', () => {
-        initAudio();
-        const text = (state === 'break') ? "きゅうけいじかん" : quizData[currentIndex].furigana;
-        speakText(text, 'ja-JP');
-    });
 }
-document.addEventListener('DOMContentLoaded', init);
