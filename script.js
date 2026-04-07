@@ -20,7 +20,18 @@ const quizDataGroups = {
         { id: 16, kanji: "ジャズ", furigana: "ジャズ", options: ["爵士乐", "古典乐", "歌舞伎", "音乐会"], correctAnswer: "爵士乐" },
         { id: 17, kanji: "コンサート", furigana: "コンサート", options: ["音乐会、演唱会", "卡拉OK", "电影院", "公園"], correctAnswer: "音乐会、演唱会" },
         { id: 18, kanji: "カラオケ", furigana: "カラオケ", options: ["卡拉OK", "歌", "乐器", "聚会"], correctAnswer: "卡拉OK" },
-        { id: 19, kanji: "歌舞伎（かぶき）", furigana: "かぶき", options: ["歌舞伎", "书法", "茶道", "柔道"], correctAnswer: "歌舞伎" }
+        { id: 19, kanji: "歌舞伎（かぶき）", furigana: "かぶき", options: ["歌舞伎", "书法", "茶道", "柔道"], correctAnswer: "歌舞伎" },
+        { 
+            id: 201, 
+            type: "reorder", 
+            kanji: "我喜欢狗。", 
+            furigana: "わたしは いぬが すきです", 
+            correctOrder: ["わたしは", "いぬが", "すきです"], 
+            options: ["いぬが", "すきです", "わたしは", "ねこが"] 
+        }
+    ], // basicの終わり
+    others: [
+        // ...
     ],
     // グループ2：後半（物品、時間、副詞、理由）
     others: [
@@ -88,6 +99,7 @@ function speakText(text, lang = 'zh-CN') {
     if (targetVoice) utterance.voice = targetVoice;
     window.speechSynthesis.speak(utterance);
 }
+let currentReorderSelection = [];
 
 function renderQuestion() {
     // 選択画面を隠してクイズ内容を出す
@@ -103,28 +115,87 @@ function renderQuestion() {
     elements.kanji.textContent = question.kanji;
     elements.furigana.textContent = question.furigana;
     elements.optionsGrid.innerHTML = '';
+    
+    // 並べ替えエリアの取得と初期化
+    const reorderContainer = document.getElementById('reorder-container');
+    const selectedChipsArea = document.getElementById('selected-chips');
+    const wordChipsArea = document.getElementById('word-chips');
+    
     selectedOption = null;
     resetFooter();
-
     speakText(question.furigana, 'ja-JP');
 
-    const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
-    shuffledOptions.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.textContent = opt;
-        btn.addEventListener('click', () => {
-            if (state !== 'answering') return;
-            initAudio();
-            Array.from(elements.optionsGrid.children).forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedOption = opt;
-            elements.actionBtn.disabled = false;
-            speakText(opt, 'zh-CN'); 
+    if (question.type === "reorder") {
+        // --- 並べ替えモード ---
+        reorderContainer.classList.remove('hidden');
+        elements.optionsGrid.classList.add('hidden');
+        selectedChipsArea.innerHTML = '';
+        wordChipsArea.innerHTML = '';
+        currentReorderSelection = [];
+        elements.actionBtn.disabled = true;
+
+        question.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.style.width = 'auto';
+            btn.textContent = opt;
+            btn.onclick = () => {
+                if (!currentReorderSelection.includes(opt)) {
+                    currentReorderSelection.push(opt);
+                    updateReorderDisplay(question);
+                    btn.style.opacity = "0.3";
+                    btn.disabled = true;
+                }
+            };
+            wordChipsArea.appendChild(btn);
         });
-        elements.optionsGrid.appendChild(btn);
-    });
+    } else {
+        // --- 通常の4択モード ---
+        reorderContainer.classList.add('hidden');
+        elements.optionsGrid.classList.remove('hidden');
+        
+        const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
+        shuffledOptions.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = opt;
+            btn.onclick = () => {
+                if (state !== 'answering') return;
+                initAudio();
+                Array.from(elements.optionsGrid.children).forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedOption = opt;
+                elements.actionBtn.disabled = false;
+                speakText(opt, 'zh-CN');
+            };
+            elements.optionsGrid.appendChild(btn);
+        });
+    }
     state = 'answering';
+}
+// 並び替えの表示を更新する関数
+function updateReorderDisplay(quiz) {
+    const selectedChipsArea = document.getElementById('selected-chips');
+    selectedChipsArea.innerHTML = '';
+    currentReorderSelection.forEach(word => {
+        const span = document.createElement('span');
+        span.style = "background: #fff; border: 2px solid #e5e5e5; padding: 8px 15px; border-radius: 12px; font-weight: bold; box-shadow: 0 2px 0 #e5e5e5;";
+        span.textContent = word;
+        selectedChipsArea.appendChild(span);
+    });
+
+    // 全部選んだら正解判定
+    if (currentReorderSelection.length === quiz.correctOrder.length) {
+        const isCorrect = currentReorderSelection.every((val, index) => val === quiz.correctOrder[index]);
+        if (isCorrect) {
+            // 正解！自動的に4択の時と同じ正解処理へ
+            handleAnswer(currentReorderSelection.join(' '), quiz.correctOrder.join(' '));
+        } else {
+            // 間違えた場合はリセット（またはそのまま）
+            alert("順番が違います。もう一度考えてみましょう！");
+            renderQuestion(); // ひとまずリセットしてやり直し
+        }
+    }
 }
 
 function handleAction() {
