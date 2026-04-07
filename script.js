@@ -38,7 +38,7 @@ const quizDataGroups = {
         { id: 31, kanji: "少し（すこし）", furigana: "すこし", options: ["一些、一点儿", "很多", "经常", "快"], correctAnswer: "一些、一点儿" },
         { id: 32, kanji: "全然（ぜんぜん）", furigana: "ぜんぜん", options: ["完全不（后接否定）", "经常", "大概", "很快"], correctAnswer: "完全不（后接否定）" },
         { id: 33, kanji: "早く / 速く", furigana: "はやく", options: ["早、快", "晚", "慢", "多"], correctAnswer: "早、快" },
-        { id: 34, kanji: "〜から", furigana: "から", options: ["因为〜", "从〜", "到〜", "和〜"], correctAnswer: "因为〜" },
+        { id: 34, kanji: "〜から", furigana: "から", options: ["因为〜", "颜色", "到〜", "和〜"], correctAnswer: "因为〜" },
         { id: 35, kanji: "どうして", furigana: "どうして", options: ["为什么", "怎么样", "哪个", "谁"], correctAnswer: "为什么" }
     ]
 };
