@@ -1,5 +1,5 @@
 window.swapRange = function(group) {
-    alert(group + " が選択されました！"); // これが出るか確認
+
     localStorage.setItem('selectedGroup', group);
     location.reload();
 };
@@ -147,10 +147,11 @@ function renderQuestion() {
     const wordChipsArea = document.getElementById('word-chips');
     
     selectedOption = null;
-    resetFooter();
-    if (question.type !== "reorder") {
-        speakText(question.furigana, 'ja-JP');
-    }
+    if (question.type === "reorder") {
+    speakText(question.kanji, 'zh-CN'); // 中国語として読み上げる
+} else {
+    speakText(question.furigana, 'ja-JP'); // 4択は日本語で読み上げる
+}
 
     if (question.type === "reorder") {
         reorderContainer.classList.remove('hidden');
