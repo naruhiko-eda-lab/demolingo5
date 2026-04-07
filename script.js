@@ -227,7 +227,10 @@ function handleAction() {
 }
 
 function checkAnswer() {
-    if (state !== 'answering' || !selectedOption) return;
+if (!selectedOption) return;
+    
+    // すでに判定済みの時に連打されるのを防ぐ
+    if (state === 'correct' || state === 'wrong') return;
     
     const quiz = quizData[currentIndex];
     let isCorrect = false;
