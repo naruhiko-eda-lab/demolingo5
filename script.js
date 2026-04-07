@@ -108,7 +108,7 @@ function initAudio() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
-function speakText(text, lang = 'addEventListener('click') {
+function speakText(text, lang = 'zh-CN') {
     if (!text) return;
     window.speechSynthesis.cancel(); 
     const utterance = new SpeechSynthesisUtterance(text);
@@ -455,7 +455,7 @@ function init() {
                 text = "きゅうけいじかん";
                 lang = 'ja-JP';
             } else {
-                // 並び替えは漢字、その他はふりがな（ピンイン）
+                // 並べ替えは漢字、その他はふりがな（ピンイン）
                 text = (quiz.type === 'reorder') ? quiz.kanji : quiz.furigana;
                 
                 // 【自動判定】ひらがな・カタカナがあれば日本語にする
@@ -476,10 +476,11 @@ function init() {
             }
         };
     }
+} // ← ここで 412行目から始まった init() 関数が正しく終わります
 
-// 確実に実行されるように呼び出し方を工夫
+// --- ページ読み込み完了時に実行する処理 ---
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
-    init(); // すでに読み込み済みなら即座に実行
+    init();
 }
