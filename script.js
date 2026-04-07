@@ -223,37 +223,40 @@ function handleAction() {
 }
 
 function checkAnswer() {
-    if (state !== 'answering') return;
+    // 答えを選んでいない、またはすでに判定済みの場合は何もしない
+    if (state !== 'answering' || !selectedOption) return;
     
     const quiz = quizData[currentIndex];
     let isCorrect = false;
+    let correctAnswerDisplay = "";
 
-    // --- 【重要】ここを修正：問題のタイプによって正解の参照先を変える ---
+    // --- 判定ロジックの分岐 ---
     if (quiz.type === "reorder") {
-        // 並べ替えの場合：合体させた文字列で比較
-        const currentString = selectedOption; // updateReorderDisplayでセットしたもの
+        // 並べ替え：合体した文字列同士を比較
         const correctString = quiz.correctOrder.join(' ');
-        isCorrect = (currentString === correctString);
+        isCorrect = (selectedOption === correctString);
+        correctAnswerDisplay = correctString;
     } else {
-        // 通常の4択の場合
+        // 4択：選んだ選択肢と正解を比較
         isCorrect = (selectedOption === quiz.correctAnswer);
+        correctAnswerDisplay = quiz.correctAnswer;
     }
 
     if (isCorrect) {
-        // 正解の処理
+        // 【正解】
         state = 'correct';
         score++;
-        showFeedback(true, quiz.type === "reorder" ? quiz.correctOrder.join(' ') : quiz.correctAnswer);
-        playCorrectSound(); // もしあれば
+        showFeedback(true, correctAnswerDisplay);
     } else {
-        // 不正解の処理
+        // 【不正解】
         state = 'wrong';
         missedQuestions.push(quiz);
-        showFeedback(false, quiz.type === "reorder" ? quiz.correctOrder.join(' ') : quiz.correctAnswer);
-        playWrongSound(); // もしあれば
+        showFeedback(false, correctAnswerDisplay);
     }
     
+    // フッターのボタンを「次へ」に更新し、無効化を解除
     elements.actionBtn.textContent = '次へ';
+    elements.actionBtn.disabled = false;
 }
 
 function handleNext() {
