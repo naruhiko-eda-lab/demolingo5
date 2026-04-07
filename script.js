@@ -177,23 +177,38 @@ function renderQuestion() {
 function updateReorderDisplay(quiz) {
     const selectedChipsArea = document.getElementById('selected-chips');
     selectedChipsArea.innerHTML = '';
+    
+    // 選んだチップを画面に表示
     currentReorderSelection.forEach(word => {
         const span = document.createElement('span');
-        span.style = "background: #fff; border: 2px solid #e5e5e5; padding: 8px 15px; border-radius: 12px; font-weight: bold; box-shadow: 0 2px 0 #e5e5e5;";
+        span.style = "background: #fff; border: 2px solid #58cc02; padding: 8px 15px; border-radius: 12px; font-weight: bold; box-shadow: 0 2px 0 #e5e5e5; color: #58cc02;";
         span.textContent = word;
         selectedChipsArea.appendChild(span);
     });
 
-    // 全部選んだら正解判定
+    // すべてのチップ（正解と同じ数）を選んだかチェック
     if (currentReorderSelection.length === quiz.correctOrder.length) {
+        // 配列の中身が一致しているか確認
         const isCorrect = currentReorderSelection.every((val, index) => val === quiz.correctOrder[index]);
+        
         if (isCorrect) {
-            // 正解！自動的に4択の時と同じ正解処理へ
-            handleAnswer(currentReorderSelection.join(' '), quiz.correctOrder.join(' '));
+            // --- 【正解の場合】 ---
+            // 4択システムに合わせて、選んだ答えを「合体させた文字列」として認識させる
+            selectedOption = currentReorderSelection.join(' '); 
+            const correctAnswerText = quiz.correctOrder.join(' ');
+            
+            // 少し待ってから、いつもの「正解判定処理」を呼び出す
+            setTimeout(() => {
+                checkAnswer(); // 既存の判定関数を呼び出す
+            }, 500); 
+            
         } else {
-            // 間違えた場合はリセット（またはそのまま）
-            alert("順番が違います。もう一度考えてみましょう！");
-            renderQuestion(); // ひとまずリセットしてやり直し
+            // --- 【不正解の場合】 ---
+            // 1秒待ってから問題をリセットしてやり直しさせる
+            setTimeout(() => {
+                alert("順番が違います。もう一度やってみましょう！");
+                renderQuestion(); 
+            }, 500);
         }
     }
 }
