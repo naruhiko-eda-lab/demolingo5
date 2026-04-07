@@ -294,16 +294,36 @@ function checkAnswer() {
     elements.actionBtn.textContent = '次へ';
 }
 
+// 1. 判定結果を表示する関数
 function showFeedback(isCorrect, correctAnswer) {
     elements.footer.classList.remove('correct', 'incorrect');
     elements.footer.classList.add(isCorrect ? 'correct' : 'incorrect');
     elements.feedbackContainer.classList.remove('hidden');
+    
     elements.feedbackTitle.textContent = isCorrect ? '正解です！' : '惜しい！';
     elements.feedbackCorrectAnswer.textContent = isCorrect ? '' : `正解: ${correctAnswer}`;
     
+    // 画像を表示する
     const feedbackImg = document.getElementById('feedback-img');
     if (feedbackImg) {
+        // ※ imagesフォルダに correct.png と wrong.png がある前提です
         feedbackImg.src = isCorrect ? 'images/correct.png' : 'images/wrong.png';
+        feedbackImg.style.display = 'block'; 
+    }
+}
+
+// 2. 次の問題へ行く前に表示を消す関数
+function resetFooter() {
+    elements.footer.classList.remove('correct', 'incorrect');
+    elements.feedbackContainer.classList.add('hidden');
+    elements.actionBtn.textContent = '検査';
+    elements.actionBtn.disabled = true;
+
+    // 前の問題の画像を消す
+    const feedbackImg = document.getElementById('feedback-img');
+    if (feedbackImg) {
+        feedbackImg.src = ''; 
+        feedbackImg.style.display = 'none'; 
     }
 }
 
