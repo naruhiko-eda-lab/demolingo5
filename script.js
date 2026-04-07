@@ -316,8 +316,8 @@ function showFeedback(isCorrect, correctAnswer) {
     // 画像を表示する
     const feedbackImg = document.getElementById('feedback-img');
     if (feedbackImg) {
-        // ※ imagesフォルダに correct.png と wrong.png がある前提です
-        feedbackImg.src = isCorrect ? 'images/correct.png' : 'images/wrong.png';
+    
+        feedbackImg.src = isCorrect ? 'images/correct.png' : 'images/incorrect.png';
         feedbackImg.style.display = 'block'; 
     }
 }
