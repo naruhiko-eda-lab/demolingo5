@@ -1,3 +1,9 @@
+// --- 1. グループ切り替え関数（一番上に置く） ---
+window.swapRange = function(group) {
+    console.log("グループを切り替えます:", group);
+    localStorage.setItem('selectedGroup', group);
+    location.reload();
+};
 // --- 第9課 データを2つのグループに分けます ---
 const quizDataGroups = {
     // グループ1：前半
@@ -284,10 +290,6 @@ function showFinalResult() {
     elements.actionBtn.disabled = false;
 }
 
-window.swapRange = function(group) {
-    localStorage.setItem('selectedGroup', group);
-    location.reload();
-}
 
 function retryMissedQuestions() {
     quizData = [...missedQuestions];
