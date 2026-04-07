@@ -223,31 +223,37 @@ function handleAction() {
 }
 
 function checkAnswer() {
-    const question = quizData[currentIndex];
-    const isCorrect = selectedOption === question.correctAnswer;
-    const feedbackImg = document.getElementById('feedback-img'); 
+    if (state !== 'answering') return;
+    
+    const quiz = quizData[currentIndex];
+    let isCorrect = false;
 
-    state = 'feedback';
-    elements.feedbackContainer.classList.remove('hidden');
-    elements.actionBtn.textContent = '继续'; 
-    Array.from(elements.optionsGrid.children).forEach(btn => btn.classList.add('disabled'));
+    // --- 【重要】ここを修正：問題のタイプによって正解の参照先を変える ---
+    if (quiz.type === "reorder") {
+        // 並べ替えの場合：合体させた文字列で比較
+        const currentString = selectedOption; // updateReorderDisplayでセットしたもの
+        const correctString = quiz.correctOrder.join(' ');
+        isCorrect = (currentString === correctString);
+    } else {
+        // 通常の4択の場合
+        isCorrect = (selectedOption === quiz.correctAnswer);
+    }
 
     if (isCorrect) {
+        // 正解の処理
+        state = 'correct';
         score++;
-        elements.footer.classList.add('correct');
-        elements.feedbackTitle.textContent = '太棒了！';
-        elements.feedbackCorrectAnswer.classList.add('hidden');
-        if (feedbackImg) feedbackImg.src = 'images/correct.png';
-        new Audio('sounds/correct.mp3').play().catch(() => {});
+        showFeedback(true, quiz.type === "reorder" ? quiz.correctOrder.join(' ') : quiz.correctAnswer);
+        playCorrectSound(); // もしあれば
     } else {
-        missedQuestions.push(question);
-        elements.footer.classList.add('incorrect');
-        elements.feedbackTitle.textContent = '不正确。';
-        elements.feedbackCorrectAnswer.querySelector('span').textContent = question.correctAnswer;
-        elements.feedbackCorrectAnswer.classList.remove('hidden');
-        if (feedbackImg) feedbackImg.src = 'images/incorrect.png';
-        new Audio('sounds/wrong.mp3').play().catch(() => {});
+        // 不正解の処理
+        state = 'wrong';
+        missedQuestions.push(quiz);
+        showFeedback(false, quiz.type === "reorder" ? quiz.correctOrder.join(' ') : quiz.correctAnswer);
+        playWrongSound(); // もしあれば
     }
+    
+    elements.actionBtn.textContent = '次へ';
 }
 
 function handleNext() {
