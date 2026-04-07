@@ -27,13 +27,30 @@ const quizDataGroups = {
         { id: 18, kanji: "カラオケ", furigana: "カラオケ", options: ["卡拉OK", "歌", "楽器", "聚会"], correctAnswer: "卡拉OK" },
         { id: 19, kanji: "歌舞伎（かぶき）", furigana: "かぶき", options: ["歌舞伎", "书法", "茶道", "柔道"], correctAnswer: "歌舞伎" },
         { 
-            id: 201, 
-            type: "reorder", 
-            kanji: "我喜欢狗。", 
-            furigana: "わたしは いぬが すきです", 
-            correctOrder: ["わたしは", "いぬが", "すきです"], 
-            options: ["いぬが", "すきです", "わたしは", "ねこが"] 
-        }
+    id: 201, 
+    type: "reorder", 
+    kanji: "我喜欢狗。", 
+    furigana: "我喜欢狗。", // 日本語から中国語へ修正
+    correctOrder: ["わたしは", "いぬが", "すきです"], 
+    options: ["いぬが", "すきです", "わたしは", "ねこが"] 
+},
+{ 
+    id: 202, 
+    type: "reorder", 
+    kanji: "我懂英语。", 
+    furigana: "我懂英语。", // 日本語から中国語へ修正
+    correctOrder: ["わたしは", "えいごが", "わかります"], 
+    options: ["わかります", "えいごが", "わたしは", "にほんごが"] 
+},
+{ 
+    id: 203, 
+    type: "reorder", 
+    kanji: "今天有事。", 
+    furigana: "今天有事。", // 日本語から中国語へ修正
+    correctOrder: ["きょうは", "ようじが", "あります"], 
+    options: ["あります", "ようじが", "きょうは", "じかんが"] 
+}
+}
     ],
     // グループ2：後半
     others: [
