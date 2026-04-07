@@ -70,6 +70,10 @@ let currentReorderSelection = [];
 
 const elements = {
     progressBar: document.getElementById('progress-bar'),
+    quizArea: document.getElementById('quiz-area'),
+    rangeSelector: document.getElementById('range-selector'), // これを追加
+    quizContent: document.getElementById('quiz-content'),     // これを追加
+    resultsArea: document.getElementById('results-area'),
     kanji: document.getElementById('kanji'),
     furigana: document.getElementById('furigana'),
     optionsGrid: document.getElementById('options-grid'),
@@ -98,10 +102,21 @@ function speakText(text, lang = 'ja-JP') {
 
 // --- メイン描画 ---
 function renderQuestion() {
+    // 選択画面を隠し、クイズ内容を表示する
     const selector = document.getElementById('range-selector');
     const content = document.getElementById('quiz-content');
-    if (selector) selector.style.display = 'none';
-    if (content) content.classList.remove('hidden');
+    
+    if (selector) {
+        selector.style.display = 'none';
+    } else {
+        console.error("エラー: range-selector が見つかりません");
+    }
+
+    if (content) {
+        content.classList.remove('hidden');
+    } else {
+        console.error("エラー: quiz-content が見つかりません");
+    }
 
     const question = quizData[currentIndex];
     const progress = ((currentIndex + 1) / quizData.length) * 100;
