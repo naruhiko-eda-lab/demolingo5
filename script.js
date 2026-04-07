@@ -115,6 +115,31 @@ function speakText(text, lang = 'ja-JP') {
     utterance.lang = lang;
     window.speechSynthesis.speak(utterance);
 }
+// 正解・不正解の音を鳴らす関数
+function playFeedbackSound(isCorrect) {
+    if (!audioCtx) initAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (isCorrect) {
+        // 正解の音：高いポーンという音
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    } else {
+        // 不正解の音：低いブブーという音
+        osc.frequency.setValueAtTime(110, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    }
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+}
 
 // --- メイン描画 ---
 function renderQuestion() {
