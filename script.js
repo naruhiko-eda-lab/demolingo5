@@ -148,7 +148,9 @@ function renderQuestion() {
     
     selectedOption = null;
     resetFooter();
-    speakText(question.furigana, 'ja-JP');
+    if (question.type !== "reorder") {
+        speakText(question.furigana, 'ja-JP');
+    }
 
     if (question.type === "reorder") {
         reorderContainer.classList.remove('hidden');
