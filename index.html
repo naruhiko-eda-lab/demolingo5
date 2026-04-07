@@ -6,14 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>日语学习 - 单词小测验</title>
     <link rel="stylesheet" href="style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Noto+Sans+JP:wght@400;700;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div class="app-container">
-        <!-- Progress Bar -->
         <header class="header">
             <button class="close-btn" aria-label="关闭">✕</button>
             <div class="progress-bar-container">
@@ -21,55 +18,48 @@
             </div>
         </header>
 
-        <!-- Quiz Area -->
-<main class="quiz-area" id="quiz-area">
+        <main class="quiz-area" id="quiz-area">
             
-<button class="option-btn" onclick="window.swapRange('basic')">
-    動詞、形容詞、趣味、名詞1
-</button>
-<button class="option-btn" onclick="window.swapRange('others')">
-    名詞2、時間、副詞、理由
-</button>
+            <div id="range-selector">
+                <h1 style="font-size: 20px; color: #4b4b4b; margin-bottom: 20px; text-align: center;">第9課の範囲を選んでください</h1>
+                <button class="option-btn" onclick="window.swapRange('basic')">
+                    動詞、形容詞、趣味、名詞1
+                </button>
+                <button class="option-btn" onclick="window.swapRange('others')">
+                    名詞2、時間、副詞、理由
+                </button>
+            </div>
 
             <div id="quiz-content" class="hidden">
-                <h1 class="question-prompt">请选择正确的中文意思</h1>
+                <h1 class="question-prompt">请选择正しいものをえらんでください</h1>
 
                 <div class="flashcard">
                     <div class="ruby-text" id="furigana"></div>
                     <div class="kanji-text" id="kanji"></div>
                     <button class="audio-btn" id="audio-btn" aria-label="播放读音">
-                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                            stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
                             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                             <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                         </svg>
                     </button>
                 </div>
 
-                <div class="options-grid" id="options-grid">
-                    </div>
-            </div>
-        </main>    
-<div id="reorder-container" class="hidden" style="margin-bottom: 20px;">
-    <div id="selected-chips" style="min-height: 60px; border-bottom: 2px solid #e5e5e5; margin-bottom: 20px; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; background: #fdfdfd; border-radius: 10px;">
-    </div>
-    <div id="word-chips" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-    </div>
-</div>
-      <div id="results-area" class="hidden">
-    <h2>学習完了！お疲れ様！</h2>
-    <img id="result-main-img" src="images/finish.png" alt="congrats" style="width: 300px; height: auto; display: block; margin: 20px auto;">
-    
-    <button id="restart-btn" class="action-btn">再来一次</button>
-</div>
+                <div class="options-grid" id="options-grid"></div>
 
-        <!-- Footer / Action Area -->
+                <div id="reorder-container" class="hidden" style="margin-top: 20px;">
+                    <div id="selected-chips" style="min-height: 60px; border-bottom: 2px solid #e5e5e5; margin-bottom: 20px; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; background: #fdfdfd; border-radius: 10px;"></div>
+                    <div id="word-chips" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"></div>
+                </div>
+            </div>
+
+            <div id="results-area" class="hidden" style="text-align: center; padding: 20px;">
+                </div>
+        </main>
+
         <footer class="footer" id="footer">
             <div class="feedback-container hidden" id="feedback-container">
-                <img id="feedback-img" src="" alt="feedback"
-                    style="width: 200px; height: auto; object-fit: contain; margin-bottom: 15px; border-radius: 10px;">
-                <div class="feedback-content">
-                    <div class="feedback-icon" id="feedback-icon"></div>
+                <div class="feedback-content" style="display: flex; align-items: center; gap: 15px; justify-content: center;">
+                    <img id="feedback-img" src="" alt="feedback" style="width: 80px; height: auto; border-radius: 10px;">
                     <div class="feedback-text">
                         <h3 id="feedback-title">正确！</h3>
                         <p id="feedback-correct-answer" class="hidden">正确答案：<span></span></p>
@@ -81,5 +71,4 @@
     </div>
     <script src="script.js"></script>
 </body>
-
 </html>
