@@ -252,32 +252,45 @@ function handleAction() {
 }
 
 function checkAnswer() {
-if (!selectedOption) return;
-    
-    // すでに判定済みの時に連打されるのを防ぐ
+    // 1. ガード：選択肢を選んでいない、またはすでに判定済みの場合は何もしない
+    if (!selectedOption) return;
     if (state === 'correct' || state === 'wrong') return;
-    
+
     const quiz = quizData[currentIndex];
     let isCorrect = false;
     let answerText = "";
 
+    // 2. 判定ロジック（並び替えか通常問題かで分岐）
     if (quiz.type === "reorder") {
+        // 並び替え：正解配列をスペースでつないだ文字列と比較
         answerText = quiz.correctOrder.join(' ');
         isCorrect = (selectedOption === answerText);
     } else {
+        // 4択：正解プロパティと比較
         answerText = quiz.correctAnswer;
         isCorrect = (selectedOption === answerText);
     }
 
+    // 3. 結果に応じた処理
     if (isCorrect) {
         state = 'correct';
         score++;
+        // --- 音を鳴らす処理を追加 ---
+        if (typeof playFeedbackSound === 'function') {
+            playFeedbackSound(true); 
+        }
         showFeedback(true, answerText);
     } else {
         state = 'wrong';
         missedQuestions.push(quiz);
+        // --- 音を鳴らす処理を追加 ---
+        if (typeof playFeedbackSound === 'function') {
+            playFeedbackSound(false);
+        }
         showFeedback(false, answerText);
     }
+
+    // 4. ボタンの表示を更新
     elements.actionBtn.textContent = '次へ';
 }
 
